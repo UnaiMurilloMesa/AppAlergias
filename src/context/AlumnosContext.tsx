@@ -23,6 +23,7 @@ export const AlumnosProvider = ({ children }: any) => {
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
   const [alergias, setAlergias] = useState<Alergia[]>([]);
   const [cursos, setCursos] = useState<Curso[]>([]);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -32,18 +33,22 @@ export const AlumnosProvider = ({ children }: any) => {
       setAlergias(cargadasAlergias);
       const cargadosCursos = await loadCursos();
       setCursos(cargadosCursos);
+      setInitialized(true);
     })();
   }, []);
 
   useEffect(() => {
+    if (!initialized) return;
     saveAlumnos(alumnos);
   }, [alumnos]);
 
   useEffect(() => {
+    if (!initialized) return;
     saveAlergias(alergias);
   }, [alergias]);
 
   useEffect(() => {
+    if (!initialized) return;
     saveCursos(cursos);
   }, [cursos]);
 
