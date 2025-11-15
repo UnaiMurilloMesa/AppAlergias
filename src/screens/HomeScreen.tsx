@@ -23,25 +23,27 @@ export default function HomeScreen({ navigation }: any) {
         Ver alumnos
       </Button>
 
-      <Button 
-        mode="contained" 
-        style={styles.button}
-        onPress={() => navigation.navigate("ListaAlergias")}
-      >
-        Gestionar alergias
-      </Button>
+      <View style={styles.rowContainer}>
+        <Button 
+          mode="contained" 
+          style={[styles.rowButton]}
+          onPress={() => navigation.navigate("ListaAlergias")}
+        >
+          Gestionar alergias
+        </Button>
+
+        <Button 
+          mode="contained" 
+          style={[styles.rowButton]}
+          onPress={() => navigation.navigate("ListaCursos")}
+        >
+          Gestionar cursos
+        </Button>
+      </View>
 
       <Button 
         mode="contained" 
-        style={styles.button}
-        onPress={() => navigation.navigate("ListaCursos")}
-      >
-        Gestionar cursos
-      </Button>
-
-      <Button 
-        mode="contained" 
-        style={styles.button}
+        style={[styles.button, styles.comidaButton]}
         onPress={() => navigation.navigate("Comida")}
       >
         Comprobar comida
@@ -63,5 +65,18 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
     padding: 5,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 8,
+  },
+  rowButton: {
+    flex: 1,
+    marginHorizontal: 6,
+    padding: 5,
+  },
+  comidaButton: {
+    backgroundColor: '#b8772dff',
   },
 });
