@@ -10,14 +10,6 @@ export default function HomeScreen({ navigation }: any) {
       <Button 
         mode="contained" 
         style={styles.button}
-        onPress={() => navigation.navigate("ListaAlumnos")}
-      >
-        Ver alumnos
-      </Button>
-
-      <Button 
-        mode="contained" 
-        style={styles.button}
         onPress={() => navigation.navigate("AddAlumno")}
       >
         Añadir alumno
@@ -26,9 +18,25 @@ export default function HomeScreen({ navigation }: any) {
       <Button 
         mode="contained" 
         style={styles.button}
+        onPress={() => navigation.navigate("ListaAlumnos")}
+      >
+        Ver alumnos
+      </Button>
+
+      <Button 
+        mode="contained" 
+        style={styles.button}
         onPress={() => navigation.navigate("ListaAlergias")}
       >
         Lista de alergias
+      </Button>
+
+      <Button 
+        mode="contained" 
+        style={styles.button}
+        onPress={() => navigation.navigate("ListaCursos")}
+      >
+        Gestionar cursos
       </Button>
 
       <Button 

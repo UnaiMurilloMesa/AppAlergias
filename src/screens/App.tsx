@@ -7,6 +7,7 @@ import HomeScreen from './HomeScreen';
 import ListaAlumnosScreen from './ListaAlumnosScreen';
 import AddAlumnoScreen from './AddAlumnoScreen';
 import ListaAlergiasScreen from './ListaAlergiasScreen';
+import ListaCursosScreen from './ListaCursosScreen';
 import ComidaScreen from './ComidaScreen';
 import { AlumnosProvider } from '../context/AlumnosContext';
 
@@ -41,6 +42,12 @@ export default function App() {
               name="ListaAlergias"
               component={ListaAlergiasScreen}
               options={{ title: "Alergias" }}
+            />
+
+            <Stack.Screen 
+              name="ListaCursos"
+              component={ListaCursosScreen}
+              options={{ title: "Cursos" }}
             />
 
             <Stack.Screen 
