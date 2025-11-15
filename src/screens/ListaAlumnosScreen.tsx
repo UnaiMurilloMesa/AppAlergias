@@ -1,11 +1,12 @@
-import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Text, IconButton, List, Divider } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, StyleSheet, FlatList, ScrollView } from 'react-native';
+import { Text, IconButton, List, Divider, Chip } from 'react-native-paper';
 import { useAlumnos } from '../context/AlumnosContext';
 import { Alert } from 'react-native';
 
 export default function ListaAlumnosScreen() {
-  const { alumnos, deleteAlumno } = useAlumnos();
+  const { alumnos, deleteAlumno, cursos } = useAlumnos();
+  const [cursoSeleccionado, setCursoSeleccionado] = useState<string | null>(null);
 
   function confirmarEliminacion(alumno: any) {
     Alert.alert(
@@ -18,11 +19,34 @@ export default function ListaAlumnosScreen() {
     );
     }
 
+  const alumnosFiltrados = cursoSeleccionado ? alumnos.filter(a => a.curso === cursoSeleccionado) : alumnos;
+
   return (
     <View style={styles.container}>
 
+      <Text variant="titleLarge" style={styles.title}>Filtrar por curso</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContainer}>
+        <Chip
+          selected={cursoSeleccionado === null}
+          onPress={() => setCursoSeleccionado(null)}
+          style={styles.filterChip}
+        >
+          Todos
+        </Chip>
+        {cursos.map(c => (
+          <Chip
+            key={c.id}
+            selected={cursoSeleccionado === c.nombre}
+            onPress={() => setCursoSeleccionado(prev => prev === c.nombre ? null : c.nombre)}
+            style={styles.filterChip}
+          >
+            {c.nombre}
+          </Chip>
+        ))}
+      </ScrollView>
+
       <FlatList
-        data={alumnos}
+        data={alumnosFiltrados}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
             <>
@@ -48,7 +72,7 @@ export default function ListaAlumnosScreen() {
             )}
         ListEmptyComponent={
           <Text style={{ textAlign: 'center', marginTop: 40 }}>
-            No hay alumnos aún.
+            {alumnosFiltrados.length === 0 ? 'No hay alumnos para este filtro.' : 'No hay alumnos aún.'}
           </Text>
         }
       />
@@ -59,4 +83,8 @@ export default function ListaAlumnosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  title: { textAlign: 'left', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6 },
+  filterScroll: { maxHeight: 56, paddingHorizontal: 8, marginBottom: 8 },
+  filterContainer: { alignItems: 'center', paddingHorizontal: 8 },
+  filterChip: { marginRight: 8 },
 });

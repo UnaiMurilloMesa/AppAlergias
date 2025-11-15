@@ -85,7 +85,7 @@ export default function AddAlumnoScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: { flex: 1, padding: 20, marginBottom: 50 },
   input: { marginBottom: 15 },
   label: { marginTop: 10, marginBottom: 10, fontWeight: 'bold' },
   chipsContainer: {

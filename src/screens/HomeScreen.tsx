@@ -5,7 +5,7 @@ import { Button, Text } from 'react-native-paper';
 export default function HomeScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
-      <Text variant="titleLarge" style={styles.title}>Alergias - Comedor</Text>
+      <Text variant="titleLarge" style={styles.title}>Alergias - Zurbarán</Text>
 
       <Button 
         mode="contained" 
@@ -28,7 +28,7 @@ export default function HomeScreen({ navigation }: any) {
         style={styles.button}
         onPress={() => navigation.navigate("ListaAlergias")}
       >
-        Lista de alergias
+        Gestionar alergias
       </Button>
 
       <Button 
