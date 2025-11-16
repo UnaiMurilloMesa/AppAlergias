@@ -2,10 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alumno } from '../types/Alumno';
 import { Alergia } from '../types/Alergia';
 import { Curso } from '../types/Curso';
+import { Comida } from '../types/Comida';
 
 const KEY_ALUMNOS = "@AlergiasApp:ALUMNOS";
 const KEY_ALERGIAS = "@AlergiasApp:ALERGIAS";
 const KEY_CURSOS = "@AlergiasApp:CURSOS";
+const KEY_COMIDAS = "@AlergiasApp:COMIDAS";
 
 export async function saveAlumnos(alumnos: Alumno[]) {
   try {
@@ -57,6 +59,24 @@ export async function loadCursos(): Promise<Curso[]> {
     return data ? JSON.parse(data) : [];
   } catch (error) {
     console.log("Error cargando cursos", error);
+    return [];
+  }
+}
+
+export async function saveComidas(comidas: Comida[]) {
+  try {
+    await AsyncStorage.setItem(KEY_COMIDAS, JSON.stringify(comidas));
+  } catch (error) {
+    console.log("Error guardando comidas", error);
+  }
+}
+
+export async function loadComidas(): Promise<Comida[]> {
+  try {
+    const data = await AsyncStorage.getItem(KEY_COMIDAS);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.log("Error cargando comidas", error);
     return [];
   }
 }

@@ -9,6 +9,8 @@ import AddAlumnoScreen from './AddAlumnoScreen';
 import ListaAlergiasScreen from './ListaAlergiasScreen';
 import ListaCursosScreen from './ListaCursosScreen';
 import ComidaScreen from './ComidaScreen';
+import AddComidaScreen from './AddComidaScreen';
+import BuscarAlergicosScreen from './BuscarAlergicosScreen';
 import { AlumnosProvider } from '../context/AlumnosContext';
 
 const Stack = createNativeStackNavigator();
@@ -54,6 +56,18 @@ export default function App() {
               name="Comida"
               component={ComidaScreen}
               options={{ title: "Comida del día" }}
+            />
+
+            <Stack.Screen 
+              name="AddComida"
+              component={AddComidaScreen}
+              options={{ title: "Añadir comida" }}
+            />
+
+            <Stack.Screen 
+              name="BuscarAlergicos"
+              component={BuscarAlergicosScreen}
+              options={{ title: "Buscar alérgicos" }}
             />
 
           </Stack.Navigator>

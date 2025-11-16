@@ -2,7 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Alumno } from '../types/Alumno';
 import { Alergia } from '../types/Alergia';
 import { Curso } from '../types/Curso';
-import { saveAlumnos, loadAlumnos, saveAlergias, loadAlergias, saveCursos, loadCursos } from '../storage/alumnosStorage';
+import { Comida } from '../types/Comida';
+import { saveAlumnos, loadAlumnos, saveAlergias, loadAlergias, saveCursos, loadCursos, saveComidas, loadComidas } from '../storage/alumnosStorage';
 import { v4 as uuidv4 } from 'uuid';
 
 interface AlumnosContextType {
@@ -15,6 +16,9 @@ interface AlumnosContextType {
   cursos: Curso[];
   addCurso: (nombre: string) => void;
   deleteCurso: (id: string) => void;
+  comidas: Comida[];
+  addComida: (c: Omit<Comida, 'id'>) => void;
+  deleteComida: (id: string) => void;
 }
 
 const AlumnosContext = createContext<AlumnosContextType | undefined>(undefined);
@@ -23,6 +27,7 @@ export const AlumnosProvider = ({ children }: any) => {
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
   const [alergias, setAlergias] = useState<Alergia[]>([]);
   const [cursos, setCursos] = useState<Curso[]>([]);
+  const [comidas, setComidas] = useState<Comida[]>([]);
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
@@ -33,6 +38,8 @@ export const AlumnosProvider = ({ children }: any) => {
       setAlergias(cargadasAlergias);
       const cargadosCursos = await loadCursos();
       setCursos(cargadosCursos);
+      const cargadasComidas = await loadComidas();
+      setComidas(cargadasComidas);
       setInitialized(true);
     })();
   }, []);
@@ -51,6 +58,11 @@ export const AlumnosProvider = ({ children }: any) => {
     if (!initialized) return;
     saveCursos(cursos);
   }, [cursos]);
+
+  useEffect(() => {
+    if (!initialized) return;
+    saveComidas(comidas);
+  }, [comidas]);
 
 
   const addAlumno = (a: Omit<Alumno, "id">) => {
@@ -89,8 +101,17 @@ export const AlumnosProvider = ({ children }: any) => {
     setCursos(prev => prev.filter(c => c.id !== id));
   };
 
+  const addComida = (c: Omit<Comida, 'id'>) => {
+    const nueva: Comida = { ...c, id: uuidv4() };
+    setComidas(prev => [...prev, nueva]);
+  };
+
+  const deleteComida = (id: string) => {
+    setComidas(prev => prev.filter(c => c.id !== id));
+  };
+
   return (
-    <AlumnosContext.Provider value={{ alumnos, addAlumno, deleteAlumno, alergias, addAlergia, deleteAlergia, cursos, addCurso, deleteCurso }}>
+    <AlumnosContext.Provider value={{ alumnos, addAlumno, deleteAlumno, alergias, addAlergia, deleteAlergia, cursos, addCurso, deleteCurso, comidas, addComida, deleteComida }}>
       {children}
     </AlumnosContext.Provider>
   );
