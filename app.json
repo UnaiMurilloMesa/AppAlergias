@@ -21,10 +21,16 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.unai_murillo.AlergiasApp"
     },
     "web": {
       "favicon": "./assets/logo-zurbaran.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "06d75373-ca4d-4676-bdbc-9131b0057a6e"
+      }
     }
   }
 }
