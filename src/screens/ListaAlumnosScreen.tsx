@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, ScrollView } from 'react-native';
-import { Text, IconButton, List, Divider, Chip, Portal, Modal, Card, Button } from 'react-native-paper';
+import { Text, IconButton, List, Divider, Chip, Portal, Modal, Card, Button, ActivityIndicator } from 'react-native-paper';
 import { useAlumnos } from '../context/AlumnosContext';
 import { Alert } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import { generateAlumnosPdf } from '../utils/pdf';
 
 export default function ListaAlumnosScreen() {
   const { alumnos, deleteAlumno, cursos, alergias } = useAlumnos();
@@ -10,6 +12,7 @@ export default function ListaAlumnosScreen() {
   const [alergiaSeleccionada, setAlergiaSeleccionada] = useState<string | null>(null);
   const [selectedAlumno, setSelectedAlumno] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   function confirmarEliminacion(alumno: any) {
     Alert.alert(
@@ -27,8 +30,32 @@ export default function ListaAlumnosScreen() {
     alumnosFiltrados = alumnosFiltrados.filter(a => a.alergias.includes(alergiaSeleccionada));
   }
 
+  async function onExport() {
+    setExporting(true);
+    try {
+      const uri = await generateAlumnosPdf(alumnos);
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        Alert.alert('PDF generado', `Archivo creado en: ${uri}`);
+      }
+    } catch (e) {
+      console.error('Error exportando PDF', e);
+      Alert.alert('Error', 'No se pudo generar el PDF.');
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <View style={styles.container}>
+
+      <View style={{ paddingHorizontal: 16, marginBottom: 8, marginTop: 12 }}>
+        <Button mode="contained" onPress={onExport} disabled={exporting} style={{ marginBottom: 8 }}>
+          {exporting ? 'Generando PDF...' : 'Exportar alumnos a PDF'}
+        </Button>
+        {exporting && <ActivityIndicator animating size={24} />}
+      </View>
 
       <Text variant="titleMedium" style={styles.title}>Filtrar por curso</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContainer}>

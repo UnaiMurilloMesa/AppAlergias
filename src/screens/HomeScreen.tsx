@@ -49,7 +49,7 @@ export default function HomeScreen({ navigation }: any) {
         style={[styles.alergicosButton]}
         onPress={() => navigation.navigate("BuscarAlergicos")}
       >
-        Buscar alérgicos
+        Buscar alumnos alérgicos
       </Button>
     </View>
   );
