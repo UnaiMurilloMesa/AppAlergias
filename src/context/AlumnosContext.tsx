@@ -17,6 +17,7 @@ interface AlumnosContextType {
   deleteAlergia: (id: string) => void;
   cursos: Curso[];
   addCurso: (nombre: string) => void;
+  updateCurso: (id: string, nombre: string) => void;
   deleteCurso: (id: string) => void;
   comidas: Comida[];
   addComida: (c: Omit<Comida, 'id'>) => void;
@@ -124,6 +125,18 @@ export const AlumnosProvider = ({ children }: any) => {
     setCursos(prev => [...prev, nuevo]);
   };
 
+  const updateCurso = (id: string, nombre: string) => {
+    const oldCurso = cursos.find(c => c.id === id);
+    if (!oldCurso) return;
+    const oldName = oldCurso.nombre;
+
+    // 1. Update course name
+    setCursos(prev => prev.map(c => c.id === id ? { ...c, nombre } : c));
+
+    // 2. Cascade update to Alumnos
+    setAlumnos(prev => prev.map(a => a.curso === oldName ? { ...a, curso: nombre } : a));
+  };
+
   const deleteCurso = (id: string) => {
     setCursos(prev => prev.filter(c => c.id !== id));
   };
@@ -138,7 +151,7 @@ export const AlumnosProvider = ({ children }: any) => {
   };
 
   return (
-    <AlumnosContext.Provider value={{ alumnos, addAlumno, updateAlumno, deleteAlumno, alergias, addAlergia, updateAlergia, deleteAlergia, cursos, addCurso, deleteCurso, comidas, addComida, deleteComida }}>
+    <AlumnosContext.Provider value={{ alumnos, addAlumno, updateAlumno, deleteAlumno, alergias, addAlergia, updateAlergia, deleteAlergia, cursos, addCurso, updateCurso, deleteCurso, comidas, addComida, deleteComida }}>
       {children}
     </AlumnosContext.Provider>
   );

@@ -1,11 +1,29 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { Button, TextInput, Card, IconButton, Text } from 'react-native-paper';
+import { Button, TextInput, Card, IconButton, Text, Portal, Dialog } from 'react-native-paper';
 import { useAlumnos } from '../context/AlumnosContext';
 
 export default function ListaCursosScreen() {
-  const { cursos, addCurso, deleteCurso } = useAlumnos();
+  const { cursos, addCurso, deleteCurso, updateCurso } = useAlumnos();
   const [nombreCurso, setNombreCurso] = useState('');
+  const [editingCurso, setEditingCurso] = useState<any>(null);
+  const [editName, setEditName] = useState('');
+  const [visible, setVisible] = useState(false);
+
+  const showDialog = (curso: any) => {
+    setEditingCurso(curso);
+    setEditName(curso.nombre);
+    setVisible(true);
+  };
+
+  const hideDialog = () => setVisible(false);
+
+  const saveEdit = () => {
+    if (editingCurso && editName.trim()) {
+      updateCurso(editingCurso.id, editName.trim());
+      hideDialog();
+    }
+  };
 
   const cursosDisponibles = ['1INF', '2INF', '3INF', '1PRIM', '2PRIM', '3PRIM', '4PRIM', '5PRIM', '6PRIM', '1ESO', '2ESO', '3ESO', '4ESO', 'BACH'];
   const cursosAgregados = cursos.map(c => c.nombre);
@@ -75,6 +93,11 @@ export default function ListaCursosScreen() {
                   {item.nombre}
                 </Text>
                 <IconButton
+                  icon="pencil"
+                  onPress={() => showDialog(item)}
+                  size={20}
+                />
+                <IconButton
                   icon="delete"
                   onPress={() => deleteCurso(item.id)}
                   size={20}
@@ -84,6 +107,23 @@ export default function ListaCursosScreen() {
           )}
         />
       )}
+
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog}>
+          <Dialog.Title>Editar Curso</Dialog.Title>
+          <Dialog.Content>
+            <TextInput
+              label="Nombre del curso"
+              value={editName}
+              onChangeText={setEditName}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancelar</Button>
+            <Button onPress={saveEdit}>Guardar</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 }
