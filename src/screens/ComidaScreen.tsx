@@ -55,7 +55,7 @@ export default function ComidaScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ padding: 20 }}>
+    <ScrollView style={styles.container} contentContainerStyle={{ padding: 20, paddingBottom: 100 }}>
       <Text variant="titleLarge" style={styles.title}>Comprobar / Añadir comida</Text>
 
       <TextInput label="Nombre de la comida" value={nombre} onChangeText={onChangeNombre} style={styles.input} />
@@ -96,7 +96,7 @@ export default function ComidaScreen() {
           </Card.Content>
         </Card>
       ) : (
-        <> 
+        <>
           <Text variant="bodyLarge" style={styles.sectionTitle}>Si la comida no existe, selecciona las alergias correspondientes y guarda:</Text>
           <View style={styles.chipsContainer}>
             {alergias.length === 0 ? (

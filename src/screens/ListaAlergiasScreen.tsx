@@ -32,29 +32,29 @@ export default function ListaAlergiasScreen() {
     setNombreAlergia('');
   }
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }}>
       <Text variant="titleLarge" style={styles.title}>Gestionar Alergias</Text>
 
-        {alergiasFaltantes.length > 0 && (
-          <>
-            <Text variant="bodyLarge" style={styles.sectionTitle}>Alergias disponibles:</Text>
-            <View style={styles.chipsContainer}>
-              {alergiasFaltantes.map((alergia) => (
-                <Button
-                  key={alergia}
-                  mode="outlined"
-                  onPress={() => agregarAlergiaPredefinida(alergia)}
-                  style={styles.chipButton}
-                  compact
-                >
-                  + {alergia}
-                </Button>
-              ))}
-            </View>
-          </>
-        )}
+      {alergiasFaltantes.length > 0 && (
+        <>
+          <Text variant="bodyLarge" style={styles.sectionTitle}>Alergias disponibles:</Text>
+          <View style={styles.chipsContainer}>
+            {alergiasFaltantes.map((alergia) => (
+              <Button
+                key={alergia}
+                mode="outlined"
+                onPress={() => agregarAlergiaPredefinida(alergia)}
+                style={styles.chipButton}
+                compact
+              >
+                + {alergia}
+              </Button>
+            ))}
+          </View>
+        </>
+      )}
 
-        <Text variant="bodyLarge" style={styles.sectionTitle}>O crear una personalizada:</Text>
+      <Text variant="bodyLarge" style={styles.sectionTitle}>O crear una personalizada:</Text>
 
       <View style={styles.inputContainer}>
         <TextInput
@@ -62,34 +62,34 @@ export default function ListaAlergiasScreen() {
           value={nombreAlergia}
           onChangeText={setNombreAlergia}
           style={styles.input}
-            placeholder="Ej: Apio, Soja, etc."
+          placeholder="Ej: Apio, Soja, etc."
         />
-          <Button mode="contained" onPress={agregarAlergiasPersonalizada} style={styles.addButton}>
+        <Button mode="contained" onPress={agregarAlergiasPersonalizada} style={styles.addButton}>
           Añadir
         </Button>
       </View>
 
-        <Text variant="bodyLarge" style={styles.sectionTitle}>Alergias registradas:</Text>
-        {alergias.length === 0 ? (
-          <Text style={styles.emptyText}>No hay alergias registradas</Text>
-        ) : (
-          <>
-            {alergias.map(item => (
-              <Card key={item.id} style={styles.card}>
-                <View style={styles.cardContent}>
-                  <Text variant="bodyLarge" style={styles.allergyName}>
-                    {item.nombre}
-                  </Text>
-                  <IconButton
-                    icon="delete"
-                    onPress={() => deleteAlergia(item.id)}
-                    size={20}
-                  />
-                </View>
-              </Card>
-            ))}
-          </>
-        )}
+      <Text variant="bodyLarge" style={styles.sectionTitle}>Alergias registradas:</Text>
+      {alergias.length === 0 ? (
+        <Text style={styles.emptyText}>No hay alergias registradas</Text>
+      ) : (
+        <>
+          {alergias.map(item => (
+            <Card key={item.id} style={styles.card}>
+              <View style={styles.cardContent}>
+                <Text variant="bodyLarge" style={styles.allergyName}>
+                  {item.nombre}
+                </Text>
+                <IconButton
+                  icon="delete"
+                  onPress={() => deleteAlergia(item.id)}
+                  size={20}
+                />
+              </View>
+            </Card>
+          ))}
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -104,20 +104,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-    sectionTitle: {
-      marginTop: 15,
-      marginBottom: 10,
-      fontWeight: 'bold',
-    },
-    chipsContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      marginBottom: 20,
-      gap: 8,
-    },
-    chipButton: {
-      marginBottom: 5,
-    },
+  sectionTitle: {
+    marginTop: 15,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  chipsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 20,
+    gap: 8,
+  },
+  chipButton: {
+    marginBottom: 5,
+  },
   inputContainer: {
     marginBottom: 20,
     gap: 10,

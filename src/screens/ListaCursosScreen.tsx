@@ -66,6 +66,7 @@ export default function ListaCursosScreen() {
       ) : (
         <FlatList
           data={cursos}
+          contentContainerStyle={{ paddingBottom: 100 }}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Card style={styles.card}>

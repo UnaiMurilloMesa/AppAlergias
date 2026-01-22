@@ -103,6 +103,7 @@ export default function ListaAlumnosScreen() {
 
       <FlatList
         data={alumnosFiltrados}
+        contentContainerStyle={{ paddingBottom: 100 }}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <>
@@ -175,9 +176,9 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   title: { textAlign: 'left', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6 },
   subtitle: { textAlign: 'left', paddingHorizontal: 16, paddingTop: 6, paddingBottom: 6 },
-  filterScroll: { maxHeight: 56, paddingHorizontal: 8, marginBottom: 8 },
-  filterContainer: { alignItems: 'center', paddingHorizontal: 8 },
-  filterChip: { marginRight: 8 },
+  filterScroll: { paddingHorizontal: 8, marginBottom: 8 },
+  filterContainer: { paddingHorizontal: 8, paddingVertical: 10 },
+  filterChip: { marginRight: 8, height: 50 },
   modalContainer: { margin: 20, backgroundColor: '#fff', padding: 16, borderRadius: 8 },
   modalAlergias: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
   modalChip: { marginRight: 6, marginBottom: 6 },

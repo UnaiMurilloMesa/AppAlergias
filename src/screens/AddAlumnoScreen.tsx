@@ -48,7 +48,7 @@ export default function AddAlumnoScreen({ navigation, route }: any) {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }}>
       <TextInput label="Nombre" value={nombre} onChangeText={setNombre} style={styles.input} />
       <TextInput label="Primer apellido" value={apellido1} onChangeText={setApellido1} style={styles.input} />
       <TextInput label="Segundo apellido" value={apellido2} onChangeText={setApellido2} style={styles.input} />
