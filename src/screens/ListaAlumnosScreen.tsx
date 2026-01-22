@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, ScrollView } from 'react-native';
-import { Text, IconButton, List, Divider, Chip, Portal, Modal, Card, Button, ActivityIndicator, FAB } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, FlatList, ScrollView, Alert } from 'react-native';
+import { Text, IconButton, List, Divider, Chip, Portal, Dialog, Card, Button, ActivityIndicator, TextInput, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useAlumnos } from '../context/AlumnosContext';
-import { Alert } from 'react-native';
 import * as Sharing from 'expo-sharing';
 import { generateAlumnosPdf } from '../utils/pdf';
+import { Alumno } from '../types/Alumno';
 
 export default function ListaAlumnosScreen() {
-  const { alumnos, deleteAlumno, cursos, alergias } = useAlumnos();
+  const { alumnos, deleteAlumno, updateAlumno, cursos, alergias } = useAlumnos();
   const [cursoSeleccionado, setCursoSeleccionado] = useState<string | null>(null);
   const [alergiaSeleccionada, setAlergiaSeleccionada] = useState<string | null>(null);
-  const [selectedAlumno, setSelectedAlumno] = useState<any>(null);
-  const [modalVisible, setModalVisible] = useState(false);
+
+  // Edit State
+  const [visible, setVisible] = useState(false);
+  const [editingAlumno, setEditingAlumno] = useState<Alumno | null>(null);
+  const [editNombre, setEditNombre] = useState('');
+  const [editApellido1, setEditApellido1] = useState('');
+  const [editApellido2, setEditApellido2] = useState('');
+  const [editCurso, setEditCurso] = useState('');
+  const [editAlergias, setEditAlergias] = useState<string[]>([]);
+
   const [exporting, setExporting] = useState(false);
   const navigation = useNavigation();
 
@@ -38,7 +46,6 @@ export default function ListaAlumnosScreen() {
   alumnosFiltrados.sort((a, b) => {
     const indexA = ORDERED_CURSOS.indexOf(a.curso);
     const indexB = ORDERED_CURSOS.indexOf(b.curso);
-    // If course not found in list, put at end
     const valA = indexA === -1 ? 999 : indexA;
     const valB = indexB === -1 ? 999 : indexB;
     return valA - valB;
@@ -61,6 +68,43 @@ export default function ListaAlumnosScreen() {
     }
   }
 
+  // Edit Logic
+  function showEditDialog(alumno: Alumno) {
+    setEditingAlumno(alumno);
+    setEditNombre(alumno.nombre);
+    setEditApellido1(alumno.apellido1);
+    setEditApellido2(alumno.apellido2 || '');
+    setEditCurso(alumno.curso);
+    setEditAlergias(alumno.alergias);
+    setVisible(true);
+  }
+
+  function hideDialog() {
+    setVisible(false);
+    setEditingAlumno(null);
+  }
+
+  function saveEdit() {
+    if (!editingAlumno) return;
+    if (!editNombre.trim() || !editApellido1.trim() || !editCurso) {
+      Alert.alert('Error', 'Nombre, Primer Apellido y Curso son obligatorios.');
+      return;
+    }
+
+    updateAlumno(editingAlumno.id, {
+      nombre: editNombre.trim(),
+      apellido1: editApellido1.trim(),
+      apellido2: editApellido2.trim(),
+      curso: editCurso,
+      alergias: editAlergias
+    });
+    hideDialog();
+  }
+
+  function toggleEditAlergia(nombreA: string) {
+    setEditAlergias(prev => prev.includes(nombreA) ? prev.filter(a => a !== nombreA) : [...prev, nombreA]);
+  }
+
   const renderHeader = () => (
     <View style={styles.headerContainer}>
       <Card style={styles.filterCard}>
@@ -78,6 +122,7 @@ export default function ListaAlumnosScreen() {
               selected={cursoSeleccionado === null}
               onPress={() => setCursoSeleccionado(null)}
               style={styles.filterChip}
+              showSelectedOverlay
             >
               Todos
             </Chip>
@@ -87,6 +132,7 @@ export default function ListaAlumnosScreen() {
                 selected={cursoSeleccionado === c.nombre}
                 onPress={() => setCursoSeleccionado(prev => prev === c.nombre ? null : c.nombre)}
                 style={styles.filterChip}
+                showSelectedOverlay
               >
                 {c.nombre}
               </Chip>
@@ -99,6 +145,7 @@ export default function ListaAlumnosScreen() {
               selected={alergiaSeleccionada === null}
               onPress={() => setAlergiaSeleccionada(null)}
               style={styles.filterChip}
+              showSelectedOverlay
             >
               Todas
             </Chip>
@@ -108,6 +155,7 @@ export default function ListaAlumnosScreen() {
                 selected={alergiaSeleccionada === a.nombre}
                 onPress={() => setAlergiaSeleccionada(prev => prev === a.nombre ? null : a.nombre)}
                 style={styles.filterChip}
+                showSelectedOverlay
               >
                 {a.nombre}
               </Chip>
@@ -124,25 +172,32 @@ export default function ListaAlumnosScreen() {
         ListHeaderComponent={renderHeader}
         data={alumnosFiltrados}
         contentContainerStyle={{ paddingBottom: 100 }}
+        keyboardShouldPersistTaps="handled"
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <>
             <List.Item
-              onPress={() => { setSelectedAlumno(item); setModalVisible(true); }}
               title={`${item.nombre} ${item.apellido1} ${item.apellido2 ?? ""}`}
               description={
-                item.alergias.length > 0
+                (item.alergias.length > 0
                   ? `Alergias: ${item.alergias.join(", ")}`
-                  : "Sin alergias registradas"
+                  : "Sin alergias registradas") + `\nCurso: ${item.curso}`
               }
               titleStyle={{ fontSize: 18, fontWeight: "bold" }}
               descriptionStyle={{ fontSize: 14, color: "#555" }}
+              descriptionNumberOfLines={3}
               right={() => (
-                <IconButton
-                  icon="delete"
-                  iconColor="red"
-                  onPress={() => confirmarEliminacion(item)}
-                />
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <IconButton
+                    icon="pencil"
+                    onPress={() => showEditDialog(item)}
+                  />
+                  <IconButton
+                    icon="trash-can"
+                    iconColor="red"
+                    onPress={() => confirmarEliminacion(item)}
+                  />
+                </View>
               )}
             />
             <Divider />
@@ -155,31 +210,52 @@ export default function ListaAlumnosScreen() {
         }
       />
 
+      {/* Edit Dialog */}
       <Portal>
-        <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.modalContainer}>
-          {selectedAlumno ? (
-            <Card>
-              <Card.Title title={`${selectedAlumno.nombre} ${selectedAlumno.apellido1} ${selectedAlumno.apellido2 ?? ''}`} />
-              <Card.Content>
-                <Text variant="titleSmall" style={{ marginBottom: 6 }}>Curso: {selectedAlumno.curso}</Text>
-                <Text variant="titleSmall" style={{ marginBottom: 6 }}>Alergias:</Text>
-                {selectedAlumno.alergias && selectedAlumno.alergias.length > 0 ? (
-                  <View style={styles.modalAlergias}>
-                    {selectedAlumno.alergias.map((a: string, idx: number) => (
-                      <Chip key={idx} style={styles.modalChip}>{a}</Chip>
-                    ))}
-                  </View>
-                ) : (
-                  <Text>Sin alergias registradas</Text>
-                )}
-              </Card.Content>
-              <Card.Actions>
-                <Button onPress={() => { setModalVisible(false); (navigation as any).navigate('AddAlumno', { alumno: selectedAlumno }); }}>Editar</Button>
-                <Button onPress={() => setModalVisible(false)}>Cerrar</Button>
-              </Card.Actions>
-            </Card>
-          ) : null}
-        </Modal>
+        <Dialog visible={visible} onDismiss={hideDialog} style={{ maxHeight: '80%' }}>
+          <Dialog.Title>Editar Alumno</Dialog.Title>
+          <Dialog.ScrollArea>
+            <ScrollView contentContainerStyle={{ paddingVertical: 10 }}>
+              <TextInput label="Nombre" value={editNombre} onChangeText={setEditNombre} style={styles.input} />
+              <TextInput label="Primer Apellido" value={editApellido1} onChangeText={setEditApellido1} style={styles.input} />
+              <TextInput label="Segundo Apellido" value={editApellido2} onChangeText={setEditApellido2} style={styles.input} />
+
+              <Text variant="bodyMedium" style={styles.label}>Curso</Text>
+              <View style={[styles.chipsContainer, { marginBottom: 15 }]}>
+                {cursos.map(c => (
+                  <Chip
+                    key={c.id}
+                    selected={editCurso === c.nombre}
+                    onPress={() => setEditCurso(c.nombre)}
+                    style={styles.chip}
+                    showSelectedOverlay
+                  >
+                    {c.nombre}
+                  </Chip>
+                ))}
+              </View>
+
+              <Text variant="bodyMedium" style={styles.label}>Alergias</Text>
+              <View style={styles.chipsContainer}>
+                {alergias.map(a => (
+                  <Chip
+                    key={a.id}
+                    selected={editAlergias.includes(a.nombre)}
+                    onPress={() => toggleEditAlergia(a.nombre)}
+                    style={styles.chip}
+                    showSelectedOverlay
+                  >
+                    {a.nombre}
+                  </Chip>
+                ))}
+              </View>
+            </ScrollView>
+          </Dialog.ScrollArea>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancelar</Button>
+            <Button onPress={saveEdit}>Guardar</Button>
+          </Dialog.Actions>
+        </Dialog>
       </Portal>
 
       <FAB
@@ -200,13 +276,14 @@ const styles = StyleSheet.create({
   filterScroll: { marginBottom: 8 },
   filterContainer: { paddingVertical: 5 },
   filterChip: { marginRight: 8, height: 50 },
-  modalContainer: { margin: 20, backgroundColor: '#fff', padding: 16, borderRadius: 8 },
-  modalAlergias: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
-  modalChip: { marginRight: 6, marginBottom: 6 },
   fab: {
     position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,
   },
+  input: { marginBottom: 10, backgroundColor: 'transparent' },
+  label: { marginBottom: 8, fontWeight: 'bold' },
+  chipsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  chip: { marginRight: 6, marginBottom: 6 },
 });
