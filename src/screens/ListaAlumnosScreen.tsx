@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, ScrollView } from 'react-native';
-import { Text, IconButton, List, Divider, Chip, Portal, Modal, Card, Button, ActivityIndicator } from 'react-native-paper';
+import { Text, IconButton, List, Divider, Chip, Portal, Modal, Card, Button, ActivityIndicator, FAB } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { useAlumnos } from '../context/AlumnosContext';
 import { Alert } from 'react-native';
 import * as Sharing from 'expo-sharing';
@@ -13,17 +14,18 @@ export default function ListaAlumnosScreen() {
   const [selectedAlumno, setSelectedAlumno] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const navigation = useNavigation();
 
   function confirmarEliminacion(alumno: any) {
     Alert.alert(
-        "Eliminar alumno",
-        `¿Estás seguro que quieres eliminar a ${alumno.nombre} ${alumno.apellido1}?`,
-        [
+      "Eliminar alumno",
+      `¿Estás seguro que quieres eliminar a ${alumno.nombre} ${alumno.apellido1}?`,
+      [
         { text: "Cancelar", style: "cancel" },
         { text: "Eliminar", style: "destructive", onPress: () => deleteAlumno(alumno.id) }
-        ]
+      ]
     );
-    }
+  }
 
   let alumnosFiltrados = cursoSeleccionado ? alumnos.filter(a => a.curso === cursoSeleccionado) : alumnos;
   if (alergiaSeleccionada) {
@@ -103,28 +105,28 @@ export default function ListaAlumnosScreen() {
         data={alumnosFiltrados}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-            <>
+          <>
             <List.Item
-            onPress={() => { setSelectedAlumno(item); setModalVisible(true); }}
-                title={`${item.nombre} ${item.apellido1} ${item.apellido2 ?? ""}`}
-                description={
-                    item.alergias.length > 0
-                    ? `Alergias: ${item.alergias.join(", ")}`
-                    : "Sin alergias registradas"
-                }
-                titleStyle={{ fontSize: 18, fontWeight: "bold" }}
-                descriptionStyle={{ fontSize: 14, color: "#555" }}
-                right={() => (
-                    <IconButton
-                    icon="delete"
-                    iconColor="red"
-                    onPress={() => confirmarEliminacion(item)}
-                    />
-                )}
+              onPress={() => { setSelectedAlumno(item); setModalVisible(true); }}
+              title={`${item.nombre} ${item.apellido1} ${item.apellido2 ?? ""}`}
+              description={
+                item.alergias.length > 0
+                  ? `Alergias: ${item.alergias.join(", ")}`
+                  : "Sin alergias registradas"
+              }
+              titleStyle={{ fontSize: 18, fontWeight: "bold" }}
+              descriptionStyle={{ fontSize: 14, color: "#555" }}
+              right={() => (
+                <IconButton
+                  icon="delete"
+                  iconColor="red"
+                  onPress={() => confirmarEliminacion(item)}
                 />
-                <Divider />
-            </>
-            )}
+              )}
+            />
+            <Divider />
+          </>
+        )}
         ListEmptyComponent={
           <Text style={{ textAlign: 'center', marginTop: 40 }}>
             {alumnosFiltrados.length === 0 ? 'No hay alumnos para este filtro.' : 'No hay alumnos aún.'}
@@ -151,12 +153,19 @@ export default function ListaAlumnosScreen() {
                 )}
               </Card.Content>
               <Card.Actions>
+                <Button onPress={() => { setModalVisible(false); (navigation as any).navigate('AddAlumno', { alumno: selectedAlumno }); }}>Editar</Button>
                 <Button onPress={() => setModalVisible(false)}>Cerrar</Button>
               </Card.Actions>
             </Card>
           ) : null}
         </Modal>
       </Portal>
+
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.navigate('AddAlumno' as never)}
+      />
 
     </View>
   );
@@ -172,4 +181,10 @@ const styles = StyleSheet.create({
   modalContainer: { margin: 20, backgroundColor: '#fff', padding: 16, borderRadius: 8 },
   modalAlergias: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
   modalChip: { marginRight: 6, marginBottom: 6 },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });

@@ -7,45 +7,39 @@ export default function HomeScreen({ navigation }: any) {
     <View style={styles.container}>
       <Text variant="titleLarge" style={styles.title}>Alergias - Zurbarán</Text>
 
-      <Button 
-        mode="contained" 
-        style={styles.button}
-        onPress={() => navigation.navigate("AddAlumno")}
-      >
-        Añadir alumno
-      </Button>
-      <Button 
-        mode="contained" 
+
+      <Button
+        mode="contained"
         style={styles.button}
         onPress={() => navigation.navigate("ListaAlumnos")}
       >
         Ver alumnos
       </Button>
 
-      <Button 
-        mode="contained" 
+      <Button
+        mode="contained"
         style={[styles.gestionarButton]}
         onPress={() => navigation.navigate("ListaAlergias")}
       >
         Gestionar alergias
       </Button>
-      <Button 
-        mode="contained" 
+      <Button
+        mode="contained"
         style={[styles.gestionarButton]}
         onPress={() => navigation.navigate("ListaCursos")}
       >
         Gestionar cursos
       </Button>
 
-      <Button 
-        mode="contained" 
+      <Button
+        mode="contained"
         style={[styles.alergicosButton]}
         onPress={() => navigation.navigate("AddComida")}
       >
         Añadir comida
       </Button>
-      <Button 
-        mode="contained" 
+      <Button
+        mode="contained"
         style={[styles.alergicosButton]}
         onPress={() => navigation.navigate("BuscarAlergicos")}
       >

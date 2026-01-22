@@ -3,15 +3,17 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Button, TextInput, Chip, Text } from 'react-native-paper';
 import { useAlumnos } from '../context/AlumnosContext';
 
-export default function AddAlumnoScreen({ navigation }: any) {
+export default function AddAlumnoScreen({ navigation, route }: any) {
 
-  const { addAlumno, alergias, cursos } = useAlumnos();
+  const { addAlumno, updateAlumno, alergias, cursos } = useAlumnos();
+  const alumnoEvaluado = route.params?.alumno;
+  const isEditing = !!alumnoEvaluado;
 
-  const [nombre, setNombre] = useState('');
-  const [apellido1, setApellido1] = useState('');
-  const [apellido2, setApellido2] = useState('');
-  const [cursoSeleccionado, setCursoSeleccionado] = useState<string>('');
-  const [alergiasSeleccionadas, setAlergiasSeleccionadas] = useState<string[]>([]);
+  const [nombre, setNombre] = useState(alumnoEvaluado?.nombre || '');
+  const [apellido1, setApellido1] = useState(alumnoEvaluado?.apellido1 || '');
+  const [apellido2, setApellido2] = useState(alumnoEvaluado?.apellido2 || '');
+  const [cursoSeleccionado, setCursoSeleccionado] = useState<string>(alumnoEvaluado?.curso || '');
+  const [alergiasSeleccionadas, setAlergiasSeleccionadas] = useState<string[]>(alumnoEvaluado?.alergias || []);
 
   function toggleAlergia(alergia: string) {
     setAlergiasSeleccionadas(prev =>
@@ -24,13 +26,23 @@ export default function AddAlumnoScreen({ navigation }: any) {
   function guardar() {
     if (!nombre || !apellido1 || !cursoSeleccionado) return;
 
-    addAlumno({
-      nombre,
-      apellido1,
-      apellido2,
-      curso: cursoSeleccionado,
-      alergias: alergiasSeleccionadas,
-    });
+    if (isEditing) {
+      updateAlumno(alumnoEvaluado.id, {
+        nombre,
+        apellido1,
+        apellido2,
+        curso: cursoSeleccionado,
+        alergias: alergiasSeleccionadas,
+      });
+    } else {
+      addAlumno({
+        nombre,
+        apellido1,
+        apellido2,
+        curso: cursoSeleccionado,
+        alergias: alergiasSeleccionadas,
+      });
+    }
 
     navigation.goBack();
   }
@@ -78,7 +90,7 @@ export default function AddAlumnoScreen({ navigation }: any) {
       )}
 
       <Button mode="contained" onPress={guardar} style={styles.button}>
-        Guardar alumno
+        {isEditing ? 'Guardar Cambios' : 'Crear Alumno'}
       </Button>
     </ScrollView>
   );

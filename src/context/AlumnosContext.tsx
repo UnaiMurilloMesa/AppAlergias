@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface AlumnosContextType {
   alumnos: Alumno[];
   addAlumno: (a: Omit<Alumno, "id">) => void;
+  updateAlumno: (id: string, data: Partial<Alumno>) => void;
   deleteAlumno: (id: string) => void;
   alergias: Alergia[];
   addAlergia: (nombre: string) => void;
@@ -73,6 +74,10 @@ export const AlumnosProvider = ({ children }: any) => {
     setAlumnos(prev => [...prev, nuevo]);
   };
 
+  const updateAlumno = (id: string, data: Partial<Alumno>) => {
+    setAlumnos(prev => prev.map(a => a.id === id ? { ...a, ...data } : a));
+  };
+
   const deleteAlumno = (id: string) => {
     setAlumnos(prev => prev.filter(a => a.id !== id));
   };
@@ -111,7 +116,7 @@ export const AlumnosProvider = ({ children }: any) => {
   };
 
   return (
-    <AlumnosContext.Provider value={{ alumnos, addAlumno, deleteAlumno, alergias, addAlergia, deleteAlergia, cursos, addCurso, deleteCurso, comidas, addComida, deleteComida }}>
+    <AlumnosContext.Provider value={{ alumnos, addAlumno, updateAlumno, deleteAlumno, alergias, addAlergia, deleteAlergia, cursos, addCurso, deleteCurso, comidas, addComida, deleteComida }}>
       {children}
     </AlumnosContext.Provider>
   );

@@ -25,7 +25,7 @@ export default function App() {
             <Stack.Screen 
               name="Home"
               component={HomeScreen}
-              options={{ title: 'Aplicación de Alergias' }}
+              options={{ title: 'Control de alergias' }}
             />
 
             <Stack.Screen 
