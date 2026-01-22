@@ -18,6 +18,7 @@ interface AlumnosContextType {
   cursos: Curso[];
   comidas: Comida[];
   addComida: (c: Omit<Comida, 'id'>) => void;
+  updateComida: (id: string, data: Partial<Comida>) => void;
   deleteComida: (id: string) => void;
 }
 
@@ -118,12 +119,16 @@ export const AlumnosProvider = ({ children }: any) => {
     setComidas(prev => [...prev, nueva]);
   };
 
+  const updateComida = (id: string, data: Partial<Comida>) => {
+    setComidas(prev => prev.map(c => c.id === id ? { ...c, ...data } : c));
+  };
+
   const deleteComida = (id: string) => {
     setComidas(prev => prev.filter(c => c.id !== id));
   };
 
   return (
-    <AlumnosContext.Provider value={{ alumnos, addAlumno, updateAlumno, deleteAlumno, alergias, addAlergia, updateAlergia, deleteAlergia, cursos, comidas, addComida, deleteComida }}>
+    <AlumnosContext.Provider value={{ alumnos, addAlumno, updateAlumno, deleteAlumno, alergias, addAlergia, updateAlergia, deleteAlergia, cursos, comidas, addComida, updateComida, deleteComida }}>
       {children}
     </AlumnosContext.Provider>
   );
