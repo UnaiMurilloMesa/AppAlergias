@@ -7,7 +7,7 @@ import HomeScreen from './HomeScreen';
 import ListaAlumnosScreen from './ListaAlumnosScreen';
 import AddAlumnoScreen from './AddAlumnoScreen';
 import ListaAlergiasScreen from './ListaAlergiasScreen';
-import ListaCursosScreen from './ListaCursosScreen';
+
 import ComidaScreen from './ComidaScreen';
 import AddComidaScreen from './AddComidaScreen';
 import BuscarAlergicosScreen from './BuscarAlergicosScreen';
@@ -22,49 +22,45 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator>
 
-            <Stack.Screen 
+            <Stack.Screen
               name="Home"
               component={HomeScreen}
               options={{ title: 'Control de alergias' }}
             />
 
-            <Stack.Screen 
+            <Stack.Screen
               name="ListaAlumnos"
               component={ListaAlumnosScreen}
               options={{ title: "Alumnos" }}
             />
 
-            <Stack.Screen 
+            <Stack.Screen
               name="AddAlumno"
               component={AddAlumnoScreen}
               options={{ title: "Añadir alumno" }}
             />
 
-            <Stack.Screen 
+            <Stack.Screen
               name="ListaAlergias"
               component={ListaAlergiasScreen}
               options={{ title: "Alergias" }}
             />
 
-            <Stack.Screen 
-              name="ListaCursos"
-              component={ListaCursosScreen}
-              options={{ title: "Cursos" }}
-            />
 
-            <Stack.Screen 
+
+            <Stack.Screen
               name="Comida"
               component={ComidaScreen}
               options={{ title: "Comida del día" }}
             />
 
-            <Stack.Screen 
+            <Stack.Screen
               name="AddComida"
               component={AddComidaScreen}
               options={{ title: "Añadir comida" }}
             />
 
-            <Stack.Screen 
+            <Stack.Screen
               name="BuscarAlergicos"
               component={BuscarAlergicosScreen}
               options={{ title: "Buscar alérgicos" }}

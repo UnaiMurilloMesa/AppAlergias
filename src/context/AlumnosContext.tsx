@@ -16,9 +16,6 @@ interface AlumnosContextType {
   updateAlergia: (id: string, nombre: string) => void;
   deleteAlergia: (id: string) => void;
   cursos: Curso[];
-  addCurso: (nombre: string) => void;
-  updateCurso: (id: string, nombre: string) => void;
-  deleteCurso: (id: string) => void;
   comidas: Comida[];
   addComida: (c: Omit<Comida, 'id'>) => void;
   deleteComida: (id: string) => void;
@@ -26,10 +23,13 @@ interface AlumnosContextType {
 
 const AlumnosContext = createContext<AlumnosContextType | undefined>(undefined);
 
+const ORDERED_CURSOS = ['1INF', '2INF', '3INF', '1PRIM', '2PRIM', '3PRIM', '4PRIM', '5PRIM', '6PRIM', '1BACH', '2BACH'];
+
 export const AlumnosProvider = ({ children }: any) => {
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
   const [alergias, setAlergias] = useState<Alergia[]>([]);
-  const [cursos, setCursos] = useState<Curso[]>([]);
+  // Initialize courses as static list
+  const [cursos] = useState<Curso[]>(ORDERED_CURSOS.map(nombre => ({ id: nombre, nombre })));
   const [comidas, setComidas] = useState<Comida[]>([]);
   const [initialized, setInitialized] = useState(false);
 
@@ -39,8 +39,7 @@ export const AlumnosProvider = ({ children }: any) => {
       setAlumnos(cargados);
       const cargadasAlergias = await loadAlergias();
       setAlergias(cargadasAlergias);
-      const cargadosCursos = await loadCursos();
-      setCursos(cargadosCursos);
+      // No need to load courses
       const cargadasComidas = await loadComidas();
       setComidas(cargadasComidas);
       setInitialized(true);
@@ -57,10 +56,7 @@ export const AlumnosProvider = ({ children }: any) => {
     saveAlergias(alergias);
   }, [alergias]);
 
-  useEffect(() => {
-    if (!initialized) return;
-    saveCursos(cursos);
-  }, [cursos]);
+  // No need to save courses
 
   useEffect(() => {
     if (!initialized) return;
@@ -117,30 +113,6 @@ export const AlumnosProvider = ({ children }: any) => {
     setAlergias(prev => prev.filter(a => a.id !== id));
   };
 
-  const addCurso = (nombre: string) => {
-    const nuevo: Curso = {
-      id: uuidv4(),
-      nombre,
-    };
-    setCursos(prev => [...prev, nuevo]);
-  };
-
-  const updateCurso = (id: string, nombre: string) => {
-    const oldCurso = cursos.find(c => c.id === id);
-    if (!oldCurso) return;
-    const oldName = oldCurso.nombre;
-
-    // 1. Update course name
-    setCursos(prev => prev.map(c => c.id === id ? { ...c, nombre } : c));
-
-    // 2. Cascade update to Alumnos
-    setAlumnos(prev => prev.map(a => a.curso === oldName ? { ...a, curso: nombre } : a));
-  };
-
-  const deleteCurso = (id: string) => {
-    setCursos(prev => prev.filter(c => c.id !== id));
-  };
-
   const addComida = (c: Omit<Comida, 'id'>) => {
     const nueva: Comida = { ...c, id: uuidv4() };
     setComidas(prev => [...prev, nueva]);
@@ -151,7 +123,7 @@ export const AlumnosProvider = ({ children }: any) => {
   };
 
   return (
-    <AlumnosContext.Provider value={{ alumnos, addAlumno, updateAlumno, deleteAlumno, alergias, addAlergia, updateAlergia, deleteAlergia, cursos, addCurso, updateCurso, deleteCurso, comidas, addComida, deleteComida }}>
+    <AlumnosContext.Provider value={{ alumnos, addAlumno, updateAlumno, deleteAlumno, alergias, addAlergia, updateAlergia, deleteAlergia, cursos, comidas, addComida, deleteComida }}>
       {children}
     </AlumnosContext.Provider>
   );

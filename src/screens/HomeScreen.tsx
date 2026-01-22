@@ -23,13 +23,7 @@ export default function HomeScreen({ navigation }: any) {
       >
         Gestionar alergias
       </Button>
-      <Button
-        mode="contained"
-        style={[styles.gestionarButton]}
-        onPress={() => navigation.navigate("ListaCursos")}
-      >
-        Gestionar cursos
-      </Button>
+
 
       <Button
         mode="contained"

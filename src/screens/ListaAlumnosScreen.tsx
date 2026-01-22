@@ -27,10 +27,22 @@ export default function ListaAlumnosScreen() {
     );
   }
 
+  const ORDERED_CURSOS = ['1INF', '2INF', '3INF', '1PRIM', '2PRIM', '3PRIM', '4PRIM', '5PRIM', '6PRIM', '1BACH', '2BACH'];
+
   let alumnosFiltrados = cursoSeleccionado ? alumnos.filter(a => a.curso === cursoSeleccionado) : alumnos;
   if (alergiaSeleccionada) {
     alumnosFiltrados = alumnosFiltrados.filter(a => a.alergias.includes(alergiaSeleccionada));
   }
+
+  // Sort by course index
+  alumnosFiltrados.sort((a, b) => {
+    const indexA = ORDERED_CURSOS.indexOf(a.curso);
+    const indexB = ORDERED_CURSOS.indexOf(b.curso);
+    // If course not found in list, put at end
+    const valA = indexA === -1 ? 999 : indexA;
+    const valB = indexB === -1 ? 999 : indexB;
+    return valA - valB;
+  });
 
   async function onExport() {
     setExporting(true);

@@ -114,7 +114,7 @@ export default function ListaAlergiasScreen() {
         </>
       )}
       <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog}>
+        <Dialog visible={visible} onDismiss={hideDialog} style={{ position: 'absolute', top: 20, width: '90%', alignSelf: 'center' }}>
           <Dialog.Title>Editar Alergia</Dialog.Title>
           <Dialog.Content>
             <TextInput
