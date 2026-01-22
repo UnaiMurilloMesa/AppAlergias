@@ -30,7 +30,7 @@ export default function BuscarAlergicosScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100 }} style={styles.container}>
+    <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100 }} style={styles.container} keyboardShouldPersistTaps="handled">
       <Text variant="titleLarge" style={styles.title}>Buscar alérgicos por comida</Text>
 
       <TextInput label="Buscar comida" value={query} onChangeText={onChangeQuery} style={styles.input} />

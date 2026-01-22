@@ -50,7 +50,7 @@ export default function ListaAlergiasScreen() {
     setNombreAlergia('');
   }
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }} keyboardShouldPersistTaps="handled">
       <Text variant="titleLarge" style={styles.title}>Gestionar Alergias</Text>
 
       {alergiasFaltantes.length > 0 && (
