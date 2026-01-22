@@ -49,59 +49,67 @@ export default function ListaAlumnosScreen() {
     }
   }
 
+  const renderHeader = () => (
+    <View style={styles.headerContainer}>
+      <Card style={styles.filterCard}>
+        <Card.Content>
+          <View style={{ marginBottom: 12 }}>
+            <Button mode="contained" onPress={onExport} disabled={exporting}>
+              {exporting ? 'Generando PDF...' : 'Exportar alumnos a PDF'}
+            </Button>
+            {exporting && <ActivityIndicator animating size={24} style={{ marginTop: 8 }} />}
+          </View>
+
+          <Text variant="titleMedium" style={styles.title}>Filtrar por curso</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContainer}>
+            <Chip
+              selected={cursoSeleccionado === null}
+              onPress={() => setCursoSeleccionado(null)}
+              style={styles.filterChip}
+            >
+              Todos
+            </Chip>
+            {cursos.map(c => (
+              <Chip
+                key={c.id}
+                selected={cursoSeleccionado === c.nombre}
+                onPress={() => setCursoSeleccionado(prev => prev === c.nombre ? null : c.nombre)}
+                style={styles.filterChip}
+              >
+                {c.nombre}
+              </Chip>
+            ))}
+          </ScrollView>
+
+          <Text variant="titleMedium" style={styles.title}>Filtrar por alergia</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContainer}>
+            <Chip
+              selected={alergiaSeleccionada === null}
+              onPress={() => setAlergiaSeleccionada(null)}
+              style={styles.filterChip}
+            >
+              Todas
+            </Chip>
+            {alergias.map(a => (
+              <Chip
+                key={a.id}
+                selected={alergiaSeleccionada === a.nombre}
+                onPress={() => setAlergiaSeleccionada(prev => prev === a.nombre ? null : a.nombre)}
+                style={styles.filterChip}
+              >
+                {a.nombre}
+              </Chip>
+            ))}
+          </ScrollView>
+        </Card.Content>
+      </Card>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-
-      <View style={{ paddingHorizontal: 16, marginBottom: 8, marginTop: 12 }}>
-        <Button mode="contained" onPress={onExport} disabled={exporting} style={{ marginBottom: 8 }}>
-          {exporting ? 'Generando PDF...' : 'Exportar alumnos a PDF'}
-        </Button>
-        {exporting && <ActivityIndicator animating size={24} />}
-      </View>
-
-      <Text variant="titleMedium" style={styles.title}>Filtrar por curso</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContainer}>
-        <Chip
-          selected={cursoSeleccionado === null}
-          onPress={() => setCursoSeleccionado(null)}
-          style={styles.filterChip}
-        >
-          Todos
-        </Chip>
-        {cursos.map(c => (
-          <Chip
-            key={c.id}
-            selected={cursoSeleccionado === c.nombre}
-            onPress={() => setCursoSeleccionado(prev => prev === c.nombre ? null : c.nombre)}
-            style={styles.filterChip}
-          >
-            {c.nombre}
-          </Chip>
-        ))}
-      </ScrollView>
-
-      <Text variant="titleMedium" style={styles.title}>Filtrar por alergia</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContainer}>
-        <Chip
-          selected={alergiaSeleccionada === null}
-          onPress={() => setAlergiaSeleccionada(null)}
-          style={styles.filterChip}
-        >
-          Todas
-        </Chip>
-        {alergias.map(a => (
-          <Chip
-            key={a.id}
-            selected={alergiaSeleccionada === a.nombre}
-            onPress={() => setAlergiaSeleccionada(prev => prev === a.nombre ? null : a.nombre)}
-            style={styles.filterChip}
-          >
-            {a.nombre}
-          </Chip>
-        ))}
-      </ScrollView>
-
       <FlatList
+        ListHeaderComponent={renderHeader}
         data={alumnosFiltrados}
         contentContainerStyle={{ paddingBottom: 100 }}
         keyExtractor={(item) => item.id}
@@ -173,11 +181,12 @@ export default function ListaAlumnosScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  title: { textAlign: 'left', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6 },
-  subtitle: { textAlign: 'left', paddingHorizontal: 16, paddingTop: 6, paddingBottom: 6 },
-  filterScroll: { paddingHorizontal: 8, marginBottom: 8 },
-  filterContainer: { paddingHorizontal: 8, paddingVertical: 10 },
+  container: { flex: 1, backgroundColor: '#f0f0f0' },
+  headerContainer: { padding: 10, paddingBottom: 0 },
+  filterCard: { marginBottom: 10, elevation: 4 },
+  title: { textAlign: 'left', marginBottom: 6, marginTop: 10 },
+  filterScroll: { marginBottom: 8 },
+  filterContainer: { paddingVertical: 5 },
   filterChip: { marginRight: 8, height: 50 },
   modalContainer: { margin: 20, backgroundColor: '#fff', padding: 16, borderRadius: 8 },
   modalAlergias: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },

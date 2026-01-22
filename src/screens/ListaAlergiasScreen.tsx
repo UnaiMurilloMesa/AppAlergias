@@ -1,11 +1,29 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Button, TextInput, Card, IconButton, Text } from 'react-native-paper';
+import { Button, TextInput, Card, IconButton, Text, Portal, Dialog } from 'react-native-paper';
 import { useAlumnos } from '../context/AlumnosContext';
 
 export default function ListaAlergiasScreen() {
-  const { alergias, addAlergia, deleteAlergia } = useAlumnos();
+  const { alergias, addAlergia, deleteAlergia, updateAlergia } = useAlumnos();
   const [nombreAlergia, setNombreAlergia] = useState('');
+  const [editingAlergia, setEditingAlergia] = useState<any>(null);
+  const [editName, setEditName] = useState('');
+  const [visible, setVisible] = useState(false);
+
+  const showDialog = (alergia: any) => {
+    setEditingAlergia(alergia);
+    setEditName(alergia.nombre);
+    setVisible(true);
+  };
+
+  const hideDialog = () => setVisible(false);
+
+  const saveEdit = () => {
+    if (editingAlergia && editName.trim()) {
+      updateAlergia(editingAlergia.id, editName.trim());
+      hideDialog();
+    }
+  };
 
 
   const alergiasDisponibles = [
@@ -81,6 +99,11 @@ export default function ListaAlergiasScreen() {
                   {item.nombre}
                 </Text>
                 <IconButton
+                  icon="pencil"
+                  onPress={() => showDialog(item)}
+                  size={20}
+                />
+                <IconButton
                   icon="delete"
                   onPress={() => deleteAlergia(item.id)}
                   size={20}
@@ -90,6 +113,22 @@ export default function ListaAlergiasScreen() {
           ))}
         </>
       )}
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog}>
+          <Dialog.Title>Editar Alergia</Dialog.Title>
+          <Dialog.Content>
+            <TextInput
+              label="Nombre de la alergia"
+              value={editName}
+              onChangeText={setEditName}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancelar</Button>
+            <Button onPress={saveEdit}>Guardar</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </ScrollView>
   );
 }
