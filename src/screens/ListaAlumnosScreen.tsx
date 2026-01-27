@@ -35,7 +35,7 @@ export default function ListaAlumnosScreen() {
     );
   }
 
-  const ORDERED_CURSOS = ['1INF', '2INF', '3INF', '1PRIM', '2PRIM', '3PRIM', '4PRIM', '5PRIM', '6PRIM', '1BACH', '2BACH'];
+  const ORDERED_CURSOS = ['1INF', '2INF', '3INF', '1PRIM', '2PRIM', '3PRIM', '4PRIM', '5PRIM', '6PRIM', '1ESO', '2ESO', '3ESO', '4ESO', '1BACH', '2BACH'];
 
   let alumnosFiltrados = cursoSeleccionado ? alumnos.filter(a => a.curso === cursoSeleccionado) : alumnos;
   if (alergiaSeleccionada) {
